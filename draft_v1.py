@@ -44,6 +44,9 @@ df['choice'] = 2 * df['response_poke'] - 5
 df = df[['right_db', 'left_db', 'timed_RT', 'choice']]
 df = df.rename(columns={'timed_RT': 'RT'})
 
+# Remove rows where RT > 1
+df = df[df['RT'] <= 1]
+
 # %%
 # save db as csv
 df.to_csv('workshop_dataset_2AFC.csv', index=False)
