@@ -9,7 +9,7 @@ from IPython.display import display, clear_output
 
 DEFAULTS = dict(
     mu=0.0,        # drift (s^-1)
-    sigma=104.0,   # noise (s^-1/2)
+    sigma=150.0,   # noise (s^-1/2)
     theta=50.0,    # bound
 )
 
@@ -41,13 +41,13 @@ def ddm_widget(dt=0.001, T=1.0, defaults=None):
     )
 
     sigma_slider = widgets.FloatSlider(
-        value=defaults["sigma"], min=103.0, max=104.0, step=1.0,
+        value=defaults["sigma"], min=50.0, max=500.0, step=5.0,
         description='noise σ', continuous_update=False,
         layout=Layout(width='300px'),
     )
 
     theta_slider = widgets.FloatSlider(
-        value=defaults["theta"], min=40.0, max=60.0, step=1.0,
+        value=defaults["theta"], min=10.0, max=150.0, step=5.0,
         description='bound θ', continuous_update=False,
         layout=Layout(width='300px'),
     )
