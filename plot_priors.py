@@ -51,6 +51,39 @@ def plot_prior_examples():
     plt.show()
 
 
+def plot_trapezoidal_prior():
+    """Plot a trapezoidal prior for mu with hard bounds and plausible bounds."""
+    lb, plb, pub, ub = 190, 195, 205, 210
+
+    # Trapezoid: rises linearly from lb to plb, flat from plb to pub, falls linearly from pub to ub
+    flat_height = 1.0 / ((pub - plb) + 0.5 * (plb - lb) + 0.5 * (ub - pub))
+    pad = 5
+    x = np.linspace(lb - pad, ub + pad, 1000)
+    y = np.piecewise(x,
+        [x < lb, (x >= lb) & (x < plb), (x >= plb) & (x <= pub), (x > pub) & (x <= ub), x > ub],
+        [0, lambda x: flat_height * (x - lb) / (plb - lb),
+         flat_height,
+         lambda x: flat_height * (ub - x) / (ub - pub), 0])
+
+    fig, ax = plt.subplots(figsize=(5, 3.5))
+    ax.fill_between(x, y, alpha=0.3, color='#2176AE')
+    ax.plot(x, y, color='#2176AE', lw=2)
+    ax.axvline(plb, color='k', ls='--', lw=1, alpha=0.5, label=f'Plausible bounds [{plb}, {pub}]')
+    ax.axvline(pub, color='k', ls='--', lw=1, alpha=0.5)
+    ax.axvline(lb, color='k', ls=':', lw=1, alpha=0.3, label=f'Hard bounds [{lb}, {ub}]')
+    ax.axvline(ub, color='k', ls=':', lw=1, alpha=0.3)
+    ax.set_xlabel(r'$\mu$', fontsize=13)
+    ax.set_ylabel('Density', fontsize=11)
+    ax.set_title('Trapezoidal prior for $\\mu$', fontsize=11)
+    ax.set_ylim(bottom=0)
+    ax.legend(fontsize=9, frameon=False)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.tick_params(labelsize=10)
+    plt.tight_layout()
+    plt.show()
+
+
 def plot_ddm_priors():
     """Plot a 1x3 figure showing uniform priors for DDM parameters mu, sigma, theta."""
     fig, axes = plt.subplots(1, 3, figsize=(12, 3.5))
