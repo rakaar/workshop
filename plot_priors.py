@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import norm
 
 
 def plot_prior_examples():
@@ -31,7 +30,7 @@ def plot_prior_examples():
     mu_cm = 170
     sigma_cm = 7
     x3 = np.linspace(140, 220, 500)
-    y3 = norm.pdf(x3, mu_cm, sigma_cm)
+    y3 = (1 / (sigma_cm * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x3 - mu_cm) / sigma_cm) ** 2)
     axes[2].fill_between(x3, y3, alpha=0.3, color='#57A773')
     axes[2].plot(x3, y3, color='#57A773', lw=2)
     seven_ft_cm = 7 * 30.48  # ~213.4 cm
@@ -44,6 +43,34 @@ def plot_prior_examples():
 
     # --- Publication-grade styling ---
     for ax in axes:
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.tick_params(labelsize=10)
+
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_ddm_priors():
+    """Plot a 1x3 figure showing uniform priors for DDM parameters mu, sigma, theta."""
+    fig, axes = plt.subplots(1, 3, figsize=(12, 3.5))
+
+    params = [
+        {'label': r'$\mu$', 'lo': 190, 'hi': 210, 'pad': 5, 'color': '#2176AE'},
+        {'label': r'$\sigma$', 'lo': 90, 'hi': 110, 'pad': 5, 'color': '#D7263D'},
+        {'label': r'$\theta$', 'lo': 35, 'hi': 45, 'pad': 5, 'color': '#57A773'},
+    ]
+
+    for ax, p in zip(axes, params):
+        lo, hi, pad = p['lo'], p['hi'], p['pad']
+        x = np.linspace(lo - pad, hi + pad, 500)
+        y = np.where((x >= lo) & (x <= hi), 1 / (hi - lo), 0)
+        ax.fill_between(x, y, alpha=0.3, color=p['color'])
+        ax.plot(x, y, color=p['color'], lw=2)
+        ax.set_xlabel(p['label'], fontsize=13)
+        ax.set_ylabel('Density', fontsize=11)
+        ax.set_title(f'{p["label"]} ~ Uniform({lo}, {hi})', fontsize=11)
+        ax.set_ylim(bottom=0)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         ax.tick_params(labelsize=10)
