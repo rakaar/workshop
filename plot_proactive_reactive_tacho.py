@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 import matplotlib.pyplot as plt
 from psiam_tied_utils import (
@@ -63,15 +64,17 @@ def plot_tachometric(V_A, theta_A, theta_E, Z_E=0, ABL=40,
         P_up = up_RTs_fit_fn(t_pts, *args)
         return np.where(P_all > 1e-20, P_up / P_all, np.nan)
 
-    easy_acc = np.nanmean([_accuracy_curve(ild) for ild in easy_ILDs], axis=0)
-    hard_acc = np.nanmean([_accuracy_curve(ild) for ild in hard_ILDs], axis=0)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', RuntimeWarning)
+        easy_acc = np.nanmean([_accuracy_curve(ild) for ild in easy_ILDs], axis=0)
+        hard_acc = np.nanmean([_accuracy_curve(ild) for ild in hard_ILDs], axis=0)
 
     plt.figure(figsize=(10, 5))
     plt.plot(t_pts, easy_acc, label=f'Easy (|ILD| = {", ".join(map(str, easy_ILDs))})')
     plt.plot(t_pts, hard_acc, label=f'Hard (|ILD| = {", ".join(map(str, hard_ILDs))})')
     plt.xlabel('RT')
     plt.ylabel('Accuracy')
-    plt.title('Tachometric Function (Analytical)')
+    plt.title('Tachometric function (Proactive + Reactive model)')
     plt.xlim(0, t_max)
     plt.ylim(0.4, 1.05)
     plt.legend()

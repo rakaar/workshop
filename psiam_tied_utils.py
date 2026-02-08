@@ -138,18 +138,19 @@ def P_small_t_btn_x1_x2(x1, x2, t, ABL, ILD, rate_lambda, T_0, theta_E, Z_E, K_m
 
     sqrt_t = np.sqrt(t)
 
-    for n in range(-K_max, K_max + 1):
-        term1 = np.exp(4 * mu * n) * (
-            Phi((x2 - (z + 4 * n + mu * t)) / sqrt_t) -
-            Phi((x1 - (z + 4 * n + mu * t)) / sqrt_t)
-        )
+    with np.errstate(over='ignore', invalid='ignore'):
+        for n in range(-K_max, K_max + 1):
+            term1 = np.exp(4 * mu * n) * (
+                Phi((x2 - (z + 4 * n + mu * t)) / sqrt_t) -
+                Phi((x1 - (z + 4 * n + mu * t)) / sqrt_t)
+            )
 
-        term2 = np.exp(2 * mu * (2 * (1 - n) - z)) * (
-            Phi((x2 - (-z + 4 * (1 - n) + mu * t)) / sqrt_t) -
-            Phi((x1 - (-z + 4 * (1 - n) + mu * t)) / sqrt_t)
-        )
+            term2 = np.exp(2 * mu * (2 * (1 - n) - z)) * (
+                Phi((x2 - (-z + 4 * (1 - n) + mu * t)) / sqrt_t) -
+                Phi((x1 - (-z + 4 * (1 - n) + mu * t)) / sqrt_t)
+            )
 
-        result += term1 - term2
+            result += term1 - term2
 
     return result
 
